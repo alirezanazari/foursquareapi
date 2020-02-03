@@ -6,7 +6,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 
 
-open class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -31,5 +31,7 @@ open class BaseFragment : Fragment() {
     fun popupBackStack(){
         activity?.onBackPressed()
     }
+
+    abstract fun onBackPressed(): Boolean
 
 }

@@ -29,4 +29,7 @@ class LocationListFragment : BaseFragment() {
         // TODO: Use the ViewModel
     }
 
+    override fun onBackPressed(): Boolean {
+        return true
+    }
 }

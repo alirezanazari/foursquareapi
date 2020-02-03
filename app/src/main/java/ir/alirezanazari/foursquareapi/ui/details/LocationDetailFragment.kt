@@ -1,12 +1,10 @@
 package ir.alirezanazari.foursquareapi.ui.details
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.lifecycle.ViewModelProviders
 import ir.alirezanazari.foursquareapi.R
 import ir.alirezanazari.foursquareapi.ui.BaseFragment
 
@@ -31,4 +29,7 @@ class LocationDetailFragment : BaseFragment() {
         // TODO: Use the ViewModel
     }
 
+    override fun onBackPressed(): Boolean {
+        return true
+    }
 }
