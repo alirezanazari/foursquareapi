@@ -2,4 +2,5 @@
     <string name="app_name">FourSquareApi</string>
     <string name="nearby_places">مکان های نزدیک من</string>
     <string name="no_place_found">مکانی یافت نشد.</string>
+    <string name="location_permission_hint">برای اجرای برنامه نیاز به دستری به مجوز موقعیت مکانی است.</string>
 </resources>
