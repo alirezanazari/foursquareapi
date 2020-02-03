@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FourSquareApi</string>
+    <string name="nearby_places">مکان های نزدیک من</string>
+    <string name="no_place_found">مکانی یافت نشد.</string>
 </resources>
