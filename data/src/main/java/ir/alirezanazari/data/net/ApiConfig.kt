@@ -11,11 +11,14 @@ class ApiConfig {
 
     companion object {
 
-        private const val BASE_URL = ""
+        private const val BASE_URL = "https://api.foursquare.com/v2/"
 
-        operator fun invoke(): RestApi {
+        operator fun invoke(
+            interceptor: RequestInterceptor
+        ): RestApi {
 
             val okHttpClient = OkHttpClient.Builder()
+                .addInterceptor(interceptor)
                 .connectTimeout(16, TimeUnit.SECONDS)
                 .build()
 
