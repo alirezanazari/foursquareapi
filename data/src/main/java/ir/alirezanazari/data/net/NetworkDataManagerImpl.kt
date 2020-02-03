@@ -18,17 +18,17 @@ class NetworkDataManagerImpl(
         }
     }
 
-    private fun convertResponseToVenueEntity(it: Item): VenueEntity {
+    private fun convertResponseToVenueEntity(item: Item): VenueEntity {
         return VenueEntity(
-            it.venue.id,
-            it.venue.name,
-            it.venue.location.lat,
-            it.venue.location.lng,
-            it.venue.location.address,
-            it.venue.location.distance,
-            it.venue.categories[0].name,
-            "${it.venue.categories[0].icon.prefix}${it.venue.categories[0].icon.suffix}",
-            "${it.venue.photos.groups[0].items[0].prefix}${it.venue.photos.groups[0].items[0].suffix}"
+            item.venue.id,
+            item.venue.name,
+            item.venue.location.lat,
+            item.venue.location.lng,
+            item.venue.location.address,
+            item.venue.location.distance,
+            if (item.venue.categories.isNotEmpty()) item.venue.categories[0].name else "",
+            if (item.venue.categories.isNotEmpty()) "${item.venue.categories[0].icon.prefix}${item.venue.categories[0].icon.suffix}" else "",
+            if (item.venue.photos.groups.isNotEmpty() && item.venue.photos.groups[0].items.isNotEmpty()) "${item.venue.photos.groups[0].items[0].prefix}${item.venue.photos.groups[0].items[0].suffix}" else ""
         )
     }
 
