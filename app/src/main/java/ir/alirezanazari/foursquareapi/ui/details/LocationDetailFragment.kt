@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProviders
 import ir.alirezanazari.foursquareapi.R
 import ir.alirezanazari.foursquareapi.ui.BaseFragment
+import org.koin.android.ext.android.inject
 
 class LocationDetailFragment : BaseFragment() {
 
@@ -14,7 +14,7 @@ class LocationDetailFragment : BaseFragment() {
         fun newInstance() = LocationDetailFragment()
     }
 
-    private lateinit var viewModel: LocationDetailViewModel
+    private val viewModel: LocationDetailViewModel by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,10 +23,8 @@ class LocationDetailFragment : BaseFragment() {
         return inflater.inflate(R.layout.location_detail_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(LocationDetailViewModel::class.java)
-        // TODO: Use the ViewModel
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onBackPressed(): Boolean {
