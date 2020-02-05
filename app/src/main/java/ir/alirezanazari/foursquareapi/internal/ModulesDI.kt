@@ -9,6 +9,8 @@ import ir.alirezanazari.data.net.ApiConfig
 import ir.alirezanazari.data.net.NetworkDataManager
 import ir.alirezanazari.data.net.NetworkDataManagerImpl
 import ir.alirezanazari.data.net.RequestInterceptor
+import ir.alirezanazari.data.providers.LocationProvider
+import ir.alirezanazari.data.providers.LocationProviderImpl
 import ir.alirezanazari.data.repository.VenueRepositoryImpl
 import ir.alirezanazari.domain.intractor.GetNearVenueUseCase
 import ir.alirezanazari.domain.repository.VenueRepository
@@ -25,8 +27,9 @@ val moduleDI = module {
 
     factory<VenueRepository> { VenueRepositoryImpl(get()) }
     factory<FusedLocationProviderClient> { LocationServices.getFusedLocationProviderClient(get<Context>()) }
+    factory<LocationProvider> { LocationProviderImpl(get() , get()) }
     factory { GetNearVenueUseCase( get() , Schedulers.io() , AndroidSchedulers.mainThread()) }
 
-    viewModel { LocationListViewModel(get()) }
+    viewModel { LocationListViewModel(get() , get()) }
     viewModel { LocationDetailViewModel() }
 }

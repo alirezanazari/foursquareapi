@@ -12,14 +12,14 @@ open class BaseViewModel(
     val loaderVisibilityListener = SingleLiveEvent<Boolean>()
     val retryVisibilityListener = SingleLiveEvent<Boolean>()
     val errorVisibilityListener = SingleLiveEvent<Boolean>()
-    val errorListener = SingleLiveEvent<String>()
+    val errorListener = SingleLiveEvent<Int>()
 
     override fun onCleared() {
         useCase?.clearDisposable()
         super.onCleared()
     }
 
-    fun setLoaderState(state: Boolean , isEffectRetry: Boolean){
+    fun setLoaderState(state: Boolean , isEffectRetry: Boolean = false){
         if (state){
             loaderVisibilityListener.value = true
             retryVisibilityListener.value = false
