@@ -7,7 +7,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="fontFamily">@font/main_font</item>
-        <item name="android:windowBackground">@drawable/splash_drawable</item>
     </style>
 
 
@@ -17,5 +16,9 @@
         <item name="android:focusable">true</item>
     </style>
 
+
+    <style name="AppTheme.Launcher" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash_drawable</item>
+    </style>
 
 </resources>

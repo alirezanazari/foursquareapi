@@ -17,8 +17,11 @@ class LocationListViewModel(
     private val locationProvider: LocationProvider
 ) : BaseViewModel() {
 
-    private val LOCATION_LIMIT_COUNT = 20
+    companion object{
+        const val LOCATION_LIMIT_COUNT = 20
+    }
     val responseListener = SingleLiveEvent<List<VenueEntity>>()
+    var isLoadingData = false
 
     suspend fun getCurrentLocationLatlng(): String {
         return withContext(Dispatchers.IO) {
@@ -27,17 +30,20 @@ class LocationListViewModel(
     }
 
     fun getNearLocations(latLng: String, offset: Int) {
-        setLoaderState(true)
+        isLoadingData = true
+        if (offset == 0) setLoaderState(true)
         useCase.execute(object : DisposableSingleObserver<List<VenueEntity>>() {
             override fun onSuccess(response: List<VenueEntity>) {
+                isLoadingData = false
                 setLoaderState(false)
                 responseListener.postValue(response)
                 if (response.isEmpty()) errorVisibilityListener.postValue(true)
             }
 
             override fun onError(e: Throwable) {
+                isLoadingData = false
                 Logger.showLog(e.message)
-                setLoaderState(false, isEffectRetry = true)
+                if (offset == 0) setLoaderState(false, isEffectRetry = true)
                 errorListener.postValue(R.string.error_connection)
             }
 

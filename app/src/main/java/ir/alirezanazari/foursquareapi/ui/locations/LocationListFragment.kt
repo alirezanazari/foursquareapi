@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import ir.alirezanazari.foursquareapi.R
 import ir.alirezanazari.foursquareapi.internal.Logger
 import ir.alirezanazari.foursquareapi.ui.BaseFragment
+import ir.alirezanazari.foursquareapi.ui.locations.LocationListViewModel.Companion.LOCATION_LIMIT_COUNT
 import kotlinx.android.synthetic.main.location_list_fragment.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,7 +20,10 @@ import org.koin.android.ext.android.inject
 class LocationListFragment : BaseFragment() {
 
     private val viewModel: LocationListViewModel by inject()
-    private val mAdapetr: LocationsAdapter by inject()
+    private val mAdapter: LocationsAdapter by inject()
+    private lateinit var mCurrentLatlng: String
+    private var mOffset = 0
+    private var isEndOfList: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,20 +40,46 @@ class LocationListFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
+        val lManager = LinearLayoutManager(rvLocations.context)
         rvLocations.apply {
-            layoutManager = LinearLayoutManager(rvLocations.context)
-            adapter = mAdapetr
+            layoutManager = lManager
+            adapter = mAdapter
         }
+
+        var visibleItemCount: Int
+        var totalItemCount: Int
+        var pastItemCount: Int
+
+        rvLocations.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0){
+                    visibleItemCount = lManager.childCount
+                    totalItemCount = lManager.itemCount
+                    pastItemCount = lManager.findFirstVisibleItemPosition()
+
+                    if (!viewModel.isLoadingData && !isEndOfList){
+                        if((visibleItemCount + pastItemCount) >= totalItemCount) {
+                            viewModel.getNearLocations(mCurrentLatlng, mOffset)
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun setupListeners() {
         viewModel.responseListener.observe(viewLifecycleOwner, Observer {
-            mAdapetr.setItems(it)
+            if (mOffset != 0) mAdapter.removeLoader()
+            mAdapter.setItems(it)
+            mOffset = mAdapter.itemCount
+            if (it.size == LOCATION_LIMIT_COUNT){
+                mAdapter.addLoader()
+            }
         })
 
         viewModel.errorListener.observe(viewLifecycleOwner , Observer {
             it?.let {
-                tvNoData.setText(it)
+                if (mOffset == 0) tvNoData.setText(it)
                 Logger.showToast(activity , it)
             }
         })
@@ -61,7 +92,9 @@ class LocationListFragment : BaseFragment() {
 
         viewModel.errorVisibilityListener.observe(viewLifecycleOwner , Observer {
             it?.let {state ->
-                tvNoData.visibility = if (state) View.VISIBLE else View.GONE
+                if (mOffset == 0){
+                    tvNoData.visibility = if (state) View.VISIBLE else View.GONE
+                }
             }
         })
 
@@ -74,9 +107,9 @@ class LocationListFragment : BaseFragment() {
 
     private fun getCurrentLocationAndFindVenues() {
         GlobalScope.launch(Dispatchers.Main) {
-            val latlng = viewModel.getCurrentLocationLatlng()
-            Logger.showLog(latlng)
-            viewModel.getNearLocations(latlng, 0)
+            mCurrentLatlng = viewModel.getCurrentLocationLatlng()
+            Logger.showLog(mCurrentLatlng)
+            viewModel.getNearLocations(mCurrentLatlng, 0)
         }
     }
 

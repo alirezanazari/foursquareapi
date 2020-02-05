@@ -12,27 +12,52 @@ import kotlinx.android.synthetic.main.row_location_list.view.*
 
 class LocationsAdapter(
     private val imageLoader: ImageLoader
-) : RecyclerView.Adapter<LocationsAdapter.LocationsViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val items = ArrayList<VenueEntity>()
+    private val items = ArrayList<VenueEntity?>()
 
     fun setItems(venues: List<VenueEntity>) {
         items.addAll(venues)
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
-        return LocationsViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.row_location_list, parent, false
-            )
-        )
+    fun addLoader(){
+        items.add(null)
+        notifyItemInserted(items.size - 1)
+    }
+
+    fun removeLoader(){
+        if (items.size == 0) return
+        val item = items[items.size - 1]
+        if (item == null){
+            items.remove(item)
+            notifyItemRemoved(items.size -1)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position] != null)
+            0
+        else
+            1
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == 0)
+            LocationsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_location_list, parent, false))
+        else
+            LoaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_loader, parent, false))
+
     }
 
     override fun getItemCount(): Int = items.size
 
-    override fun onBindViewHolder(holder: LocationsViewHolder, position: Int) {
-        holder.bind(items[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is LoaderViewHolder){
+            holder.bind()
+        }else if (holder is LocationsViewHolder){
+            if (items[position] != null) holder.bind(items[position]!!)
+        }
     }
 
     inner class LocationsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -51,4 +76,12 @@ class LocationsAdapter(
 
     }
 
+    inner class LoaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+
+        fun bind(){
+            itemView.apply {
+
+            }
+        }
+    }
 }
