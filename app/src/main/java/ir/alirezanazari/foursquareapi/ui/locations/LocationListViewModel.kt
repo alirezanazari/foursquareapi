@@ -29,6 +29,12 @@ class LocationListViewModel(
         }
     }
 
+    suspend fun isLocationChanged(lat: Double , lng: Double): Boolean {
+        return withContext(Dispatchers.IO) {
+            return@withContext locationProvider.isLocationChanged(lat , lng)
+        }
+    }
+
     fun getNearLocations(latLng: String, offset: Int) {
         isLoadingData = true
         if (offset == 0) setLoaderState(true)

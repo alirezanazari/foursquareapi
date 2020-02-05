@@ -1,15 +1,22 @@
 package ir.alirezanazari.foursquareapi.ui.locations
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ir.alirezanazari.domain.entity.VenueEntity
 import ir.alirezanazari.foursquareapi.R
 import ir.alirezanazari.foursquareapi.internal.Logger
 import ir.alirezanazari.foursquareapi.ui.BaseFragment
+import ir.alirezanazari.foursquareapi.ui.MainActivity.Companion.LOCATION_CHECKER_BROADCAST
 import ir.alirezanazari.foursquareapi.ui.locations.LocationListViewModel.Companion.LOCATION_LIMIT_COUNT
 import kotlinx.android.synthetic.main.location_list_fragment.*
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +31,7 @@ class LocationListFragment : BaseFragment() {
     private lateinit var mCurrentLatlng: String
     private var mOffset = 0
     private var isEndOfList: Boolean = false
+    private lateinit var mLocationBroadcast: BroadcastReceiver
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +45,7 @@ class LocationListFragment : BaseFragment() {
         getCurrentLocationAndFindVenues()
         setupListeners()
         setupRecyclerView()
+        setupLocationBroadcast()
     }
 
     private fun setupRecyclerView() {
@@ -70,22 +79,11 @@ class LocationListFragment : BaseFragment() {
     private fun setupListeners() {
 
         btnRetry.setOnClickListener {
-            mAdapter.clearItems()
-            mOffset = 0
-            isEndOfList = false
-            viewModel.isLoadingData = false
-            viewModel.getNearLocations(mCurrentLatlng, mOffset)
+            getCurrentLocationAndFindVenues()
         }
 
         viewModel.responseListener.observe(viewLifecycleOwner, Observer {
-            if (mOffset != 0) mAdapter.removeLoader()
-            mAdapter.setItems(it)
-            mOffset = mAdapter.itemCount
-            if (it.size == LOCATION_LIMIT_COUNT) {
-                mAdapter.addLoader()
-            } else {
-                isEndOfList = true
-            }
+            handleVenusResponse(it)
         })
 
         viewModel.errorListener.observe(viewLifecycleOwner, Observer {
@@ -116,15 +114,78 @@ class LocationListFragment : BaseFragment() {
         })
     }
 
+    private fun handleVenusResponse(items: List<VenueEntity>) {
+        if (mOffset != 0) {
+            mAdapter.removeLoader()
+        }
+
+        mAdapter.setItems(items)
+        mOffset = mAdapter.itemCount
+
+        if (items.size == LOCATION_LIMIT_COUNT) {
+            mAdapter.addLoader()
+        } else {
+            isEndOfList = true
+        }
+
+    }
+
     private fun getCurrentLocationAndFindVenues() {
         GlobalScope.launch(Dispatchers.Main) {
+            mAdapter.clearItems()
+          
+            mOffset = 0
+            isEndOfList = false
+            viewModel.isLoadingData = false
             mCurrentLatlng = viewModel.getCurrentLocationLatlng()
             Logger.showLog(mCurrentLatlng)
-            viewModel.getNearLocations(mCurrentLatlng, 0)
+           
+            viewModel.getNearLocations(mCurrentLatlng, mOffset)
+        }
+    }
+
+    private fun setupLocationBroadcast() {
+        mLocationBroadcast = object : BroadcastReceiver(){
+            override fun onReceive(context: Context?, intent: Intent?) {
+                checkLocationAndUpdateIfNeeded()
+            }
+        }
+
+        //register
+        if (activity != null) {
+            val intentFilter = IntentFilter(LOCATION_CHECKER_BROADCAST)
+            LocalBroadcastManager.getInstance(activity!!)
+                .registerReceiver(mLocationBroadcast, intentFilter)
+        }
+    }
+
+    private fun checkLocationAndUpdateIfNeeded() {
+        GlobalScope.launch(Dispatchers.Main) {
+            val latlng = getCurrentLatlng() ?: return@launch
+            val isChanged = viewModel.isLocationChanged(latlng.first , latlng.second)
+            Logger.showLog("Location changed: $isChanged")
+            if (isChanged) getCurrentLocationAndFindVenues()
+        }
+    }
+
+    private fun getCurrentLatlng(): Pair<Double , Double>? {
+        return try {
+            val latlng = mCurrentLatlng.split(",")
+            Pair(latlng[0].toDouble() , latlng[1].toDouble())
+        }catch (ex: Exception){
+            null
         }
     }
 
     override fun onBackPressed(): Boolean {
         return true
+    }
+
+    override fun onDestroyView() {
+        //unregister broadcast location
+        if (activity != null) {
+            LocalBroadcastManager.getInstance(activity!!).unregisterReceiver(mLocationBroadcast)
+        }
+        super.onDestroyView()
     }
 }
