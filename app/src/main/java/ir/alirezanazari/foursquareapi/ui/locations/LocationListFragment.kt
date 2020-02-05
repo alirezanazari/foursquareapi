@@ -50,15 +50,15 @@ class LocationListFragment : BaseFragment() {
         var totalItemCount: Int
         var pastItemCount: Int
 
-        rvLocations.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        rvLocations.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0){
+                if (dy > 0) {
                     visibleItemCount = lManager.childCount
                     totalItemCount = lManager.itemCount
                     pastItemCount = lManager.findFirstVisibleItemPosition()
 
-                    if (!viewModel.isLoadingData && !isEndOfList){
-                        if((visibleItemCount + pastItemCount) >= totalItemCount) {
+                    if (!viewModel.isLoadingData && !isEndOfList) {
+                        if ((visibleItemCount + pastItemCount) >= totalItemCount) {
                             viewModel.getNearLocations(mCurrentLatlng, mOffset)
                         }
                     }
@@ -68,38 +68,49 @@ class LocationListFragment : BaseFragment() {
     }
 
     private fun setupListeners() {
+
+        btnRetry.setOnClickListener {
+            mAdapter.clearItems()
+            mOffset = 0
+            isEndOfList = false
+            viewModel.isLoadingData = false
+            viewModel.getNearLocations(mCurrentLatlng, mOffset)
+        }
+
         viewModel.responseListener.observe(viewLifecycleOwner, Observer {
             if (mOffset != 0) mAdapter.removeLoader()
             mAdapter.setItems(it)
             mOffset = mAdapter.itemCount
-            if (it.size == LOCATION_LIMIT_COUNT){
+            if (it.size == LOCATION_LIMIT_COUNT) {
                 mAdapter.addLoader()
+            } else {
+                isEndOfList = true
             }
         })
 
-        viewModel.errorListener.observe(viewLifecycleOwner , Observer {
+        viewModel.errorListener.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (mOffset == 0) tvNoData.setText(it)
-                Logger.showToast(activity , it)
+                Logger.showToast(activity, it)
             }
         })
 
-        viewModel.loaderVisibilityListener.observe(viewLifecycleOwner , Observer {
-            it?.let {state ->
+        viewModel.loaderVisibilityListener.observe(viewLifecycleOwner, Observer {
+            it?.let { state ->
                 pbLoading.visibility = if (state) View.VISIBLE else View.GONE
             }
         })
 
-        viewModel.errorVisibilityListener.observe(viewLifecycleOwner , Observer {
-            it?.let {state ->
-                if (mOffset == 0){
+        viewModel.errorVisibilityListener.observe(viewLifecycleOwner, Observer {
+            it?.let { state ->
+                if (mOffset == 0) {
                     tvNoData.visibility = if (state) View.VISIBLE else View.GONE
                 }
             }
         })
 
-        viewModel.retryVisibilityListener.observe(viewLifecycleOwner , Observer {
-            it?.let {state ->
+        viewModel.retryVisibilityListener.observe(viewLifecycleOwner, Observer {
+            it?.let { state ->
                 btnRetry.visibility = if (state) View.VISIBLE else View.GONE
             }
         })

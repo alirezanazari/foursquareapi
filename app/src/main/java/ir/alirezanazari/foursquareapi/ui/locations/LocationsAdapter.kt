@@ -21,6 +21,11 @@ class LocationsAdapter(
         notifyDataSetChanged()
     }
 
+    fun clearItems(){
+        items.clear()
+        notifyDataSetChanged()
+    }
+
     fun addLoader(){
         items.add(null)
         notifyItemInserted(items.size - 1)
