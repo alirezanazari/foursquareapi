@@ -21,13 +21,13 @@ open class BaseViewModel(
 
     fun setLoaderState(state: Boolean , isEffectRetry: Boolean = false){
         if (state){
-            loaderVisibilityListener.value = true
-            retryVisibilityListener.value = false
-            errorVisibilityListener.value = false
+            loaderVisibilityListener.postValue(true)
+            retryVisibilityListener.postValue(false)
+            errorVisibilityListener.postValue(false)
         }else{
-            loaderVisibilityListener.value = false
-            errorVisibilityListener.value = true
-            retryVisibilityListener.value = isEffectRetry
+            loaderVisibilityListener.postValue(false)
+            errorVisibilityListener.postValue(isEffectRetry)
+            retryVisibilityListener.postValue(isEffectRetry)
         }
     }
 

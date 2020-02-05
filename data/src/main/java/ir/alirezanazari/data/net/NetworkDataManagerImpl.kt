@@ -13,7 +13,7 @@ class NetworkDataManagerImpl(
         limit: Int,
         offset: Int
     ): Single<List<VenueEntity>> {
-        return api.getRecommandedVenue(latLng, limit, offset).map { venueModel ->
+        return api.getRecommendedVenue(latLng, limit, offset).map { venueModel ->
             venueModel.response.groups[0].items.map { convertResponseToVenueEntity(it) }
         }
     }

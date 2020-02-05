@@ -32,6 +32,7 @@ class LocationListViewModel(
             override fun onSuccess(response: List<VenueEntity>) {
                 setLoaderState(false)
                 responseListener.postValue(response)
+                if (response.isEmpty()) errorVisibilityListener.postValue(true)
             }
 
             override fun onError(e: Throwable) {

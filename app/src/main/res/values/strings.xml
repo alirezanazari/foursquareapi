@@ -4,4 +4,6 @@
     <string name="no_place_found">مکانی یافت نشد.</string>
     <string name="location_permission_hint">برای اجرای برنامه نیاز به دستری به مجوز موقعیت مکانی است.</string>
     <string name="error_connection">خطایی در دریافت اطلاعات رخ داد.</string>
+    <string name="no_address">موقعیت ثبت نشده</string>
+    <string name="km">کیلومتر</string>
 </resources>
