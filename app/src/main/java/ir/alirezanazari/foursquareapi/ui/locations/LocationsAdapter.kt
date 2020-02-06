@@ -74,7 +74,7 @@ class LocationsAdapter(
                 tvDistance.text = "${item.distance / 1000} ${tvDistance.context.getString(R.string.km)}"
                 tvType.text = item.categoryType
                 //Note: Image are wrong some has picture but url doesn't show any picture in browser
-                imageLoader.load(ivPicture, item.pictures , R.drawable.place_holder)
+                imageLoader.load(ivPicture, item.picture , R.drawable.place_holder)
                 imageLoader.load(icType, item.categoryIcon , R.drawable.ic_type)
             }
         }
