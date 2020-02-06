@@ -21,13 +21,14 @@ import kotlinx.coroutines.withContext
 
 class LocationListViewModel(
     private val useCase: GetNearVenueUseCase,
-    private val locationProvider: LocationProvider ,
+    private val locationProvider: LocationProvider,
     private val db: VenueDao
 ) : BaseViewModel() {
 
-    companion object{
+    companion object {
         const val LOCATION_LIMIT_COUNT = 20
     }
+
     val responseListener = SingleLiveEvent<List<VenueEntity>>()
     var isLoadingData = false
 
@@ -37,9 +38,9 @@ class LocationListViewModel(
         }
     }
 
-    suspend fun isLocationChanged(lat: Double , lng: Double): Boolean {
+    suspend fun isLocationChanged(lat: Double, lng: Double): Boolean {
         return withContext(Dispatchers.IO) {
-            return@withContext locationProvider.isLocationChanged(lat , lng)
+            return@withContext locationProvider.isLocationChanged(lat, lng)
         }
     }
 
@@ -52,7 +53,7 @@ class LocationListViewModel(
         useCase.execute(object : DisposableSingleObserver<List<VenueEntity>>() {
             override fun onSuccess(response: List<VenueEntity>) {
                 handleVenueResult(response)
-                if (offset == 0) saveDataToDb(response ,latLng)
+                if (offset == 0) saveDataToDb(response, latLng)
             }
 
             override fun onError(e: Throwable) {
@@ -72,10 +73,21 @@ class LocationListViewModel(
         if (response.isEmpty()) errorVisibilityListener.postValue(true)
     }
 
-    private fun saveDataToDb(response: List<VenueEntity> , userLatLng: String) {
+    private fun saveDataToDb(response: List<VenueEntity>, userLatLng: String) {
         GlobalScope.launch(Dispatchers.IO) {
             response.map {
-                val venue = VenueDataEntity(it.id , it.name , it.latitude , it.longitude , it.address , it.distance , it.categoryType , it.categoryIcon , it.picture , userLatLng)
+                val venue = VenueDataEntity(
+                    it.id,
+                    it.name,
+                    it.latitude,
+                    it.longitude,
+                    it.address,
+                    it.distance,
+                    it.categoryType,
+                    it.categoryIcon,
+                    it.picture,
+                    userLatLng
+                )
                 db.upsert(venue)
                 venue
             }
@@ -93,22 +105,32 @@ class LocationListViewModel(
         db.getLastLocation()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe( onSuccess , { Logger.showLog(it.message) })
+            .subscribe(onSuccess, { Logger.showLog(it.message) })
     }
 
     @SuppressLint("CheckResult")
-    fun getNearLocationsFromDb(lastLatlng: String , current: String) {
+    fun getNearLocationsFromDb(lastLatlng: String, current: String) {
         db.getVenues(lastLatlng)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({result ->
+            .subscribe({ result ->
                 val venues = result.map {
-                    VenueEntity(it.id , it.name , it.latitude , it.longitude , it.address , it.distance , it.categoryType , it.categoryIcon , it.picture)
+                    VenueEntity(
+                        it.id,
+                        it.name,
+                        it.latitude,
+                        it.longitude,
+                        it.address,
+                        it.distance,
+                        it.categoryType,
+                        it.categoryIcon,
+                        it.picture
+                    )
                 }
                 handleVenueResult(venues)
             }, {
                 Logger.showLog(it.message)
-                getNearLocations(current , 0)
+                getNearLocations(current, 0)
             })
     }
 

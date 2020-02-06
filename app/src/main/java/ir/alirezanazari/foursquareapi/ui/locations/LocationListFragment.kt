@@ -133,7 +133,7 @@ class LocationListFragment : BaseFragment() {
     private fun getCurrentLocationAndFindVenues(isFromBroadcast: Boolean = false) {
         GlobalScope.launch(Dispatchers.Main) {
             mAdapter.clearItems()
-          
+
             mOffset = 0
             isEndOfList = false
             viewModel.isLoadingData = false
@@ -142,7 +142,7 @@ class LocationListFragment : BaseFragment() {
 
             if (!isFromBroadcast) {
                 viewModel.getLastLocationFromDb { getFindVenues(it) }
-            }else{
+            } else {
                 viewModel.getNearLocations(mCurrentLatlng, mOffset)
             }
         }
@@ -154,8 +154,8 @@ class LocationListFragment : BaseFragment() {
                 val location = getConvertLocation(lastLocations[0])
                 if (location != null) {
                     val isChanged = viewModel.isLocationChanged(location.first, location.second)
-                    if (!isChanged){
-                        viewModel.getNearLocationsFromDb(lastLocations[0] , mCurrentLatlng)
+                    if (!isChanged) {
+                        viewModel.getNearLocationsFromDb(lastLocations[0], mCurrentLatlng)
                         return@launch
                     }
                 }
@@ -165,7 +165,7 @@ class LocationListFragment : BaseFragment() {
     }
 
     private fun setupLocationBroadcast() {
-        mLocationBroadcast = object : BroadcastReceiver(){
+        mLocationBroadcast = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 checkLocationAndUpdateIfNeeded()
             }
@@ -182,17 +182,17 @@ class LocationListFragment : BaseFragment() {
     private fun checkLocationAndUpdateIfNeeded() {
         GlobalScope.launch(Dispatchers.Main) {
             val latlng = getConvertLocation(mCurrentLatlng) ?: return@launch
-            val isChanged = viewModel.isLocationChanged(latlng.first , latlng.second)
+            val isChanged = viewModel.isLocationChanged(latlng.first, latlng.second)
             Logger.showLog("Location changed: $isChanged")
             if (isChanged) getCurrentLocationAndFindVenues(true)
         }
     }
 
-    private fun getConvertLocation(location: String): Pair<Double , Double>? {
+    private fun getConvertLocation(location: String): Pair<Double, Double>? {
         return try {
             val latlng = location.split(",")
-            Pair(latlng[0].toDouble() , latlng[1].toDouble())
-        }catch (ex: Exception){
+            Pair(latlng[0].toDouble(), latlng[1].toDouble())
+        } catch (ex: Exception) {
             null
         }
     }
