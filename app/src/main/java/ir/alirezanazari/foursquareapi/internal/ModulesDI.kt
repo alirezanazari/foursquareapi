@@ -5,6 +5,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import ir.alirezanazari.data.db.FourSquareDatabase
 import ir.alirezanazari.data.net.ApiConfig
 import ir.alirezanazari.data.net.NetworkDataManager
 import ir.alirezanazari.data.net.NetworkDataManagerImpl
@@ -26,13 +27,14 @@ val moduleDI = module {
     single { RequestInterceptor() }
     single { ApiConfig(get()) }
     single<NetworkDataManager> { NetworkDataManagerImpl(get()) }
+    single { FourSquareDatabase(get()) }
 
     factory<VenueRepository> { VenueRepositoryImpl(get()) }
     factory<FusedLocationProviderClient> { LocationServices.getFusedLocationProviderClient(get<Context>()) }
     factory<LocationProvider> { LocationProviderImpl(get() , get()) }
     factory { GetNearVenueUseCase( get() , Schedulers.io() , AndroidSchedulers.mainThread()) }
 
-    viewModel { LocationListViewModel(get() , get()) }
+    viewModel { LocationListViewModel(get() , get() , get<FourSquareDatabase>().getVenueDao()) }
     viewModel { LocationDetailViewModel() }
 
     factory { LocationsAdapter(get()) }

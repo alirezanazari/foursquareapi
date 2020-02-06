@@ -22,4 +22,7 @@ interface VenueDao {
 
     @Query("select * from $VENUE_TABLE_NAME where userLocation= :latlng")
     fun getVenues(latlng: String): Single<List<VenueDataEntity>>
+
+    @Query("select userLocation from $VENUE_TABLE_NAME")
+    fun getLastLocation():Single<List<String>>
 }
