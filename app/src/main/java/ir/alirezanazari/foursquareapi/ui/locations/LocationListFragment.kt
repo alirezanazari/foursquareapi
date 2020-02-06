@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ir.alirezanazari.domain.entity.VenueEntity
 import ir.alirezanazari.foursquareapi.R
 import ir.alirezanazari.foursquareapi.internal.Logger
+import ir.alirezanazari.foursquareapi.internal.Navigator
 import ir.alirezanazari.foursquareapi.ui.BaseFragment
 import ir.alirezanazari.foursquareapi.ui.MainActivity.Companion.LOCATION_CHECKER_BROADCAST
 import ir.alirezanazari.foursquareapi.ui.locations.LocationListViewModel.Companion.LOCATION_LIMIT_COUNT
@@ -53,6 +54,15 @@ class LocationListFragment : BaseFragment() {
         rvLocations.apply {
             layoutManager = lManager
             adapter = mAdapter
+        }
+
+        mAdapter.listener = object : LocationsAdapter.LocationAdapterListener{
+            override fun onItemClicked(id: String?) {
+                id?.let {
+                    if (activity == null) return@let
+                    Navigator.openLocationDetailFragment(activity?.supportFragmentManager , it)
+                }
+            }
         }
 
         var visibleItemCount: Int

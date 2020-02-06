@@ -15,28 +15,29 @@ class LocationsAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = ArrayList<VenueEntity?>()
+    var listener: LocationAdapterListener? = null
 
     fun setItems(venues: List<VenueEntity>) {
         items.addAll(venues)
         notifyDataSetChanged()
     }
 
-    fun clearItems(){
+    fun clearItems() {
         items.clear()
         notifyDataSetChanged()
     }
 
-    fun addLoader(){
+    fun addLoader() {
         items.add(null)
         notifyItemInserted(items.size - 1)
     }
 
-    fun removeLoader(){
+    fun removeLoader() {
         if (items.size == 0) return
         val item = items[items.size - 1]
-        if (item == null){
+        if (item == null) {
             items.remove(item)
-            notifyItemRemoved(items.size -1)
+            notifyItemRemoved(items.size - 1)
         }
     }
 
@@ -49,18 +50,30 @@ class LocationsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == 0)
-            LocationsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_location_list, parent, false))
+            LocationsViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.row_location_list,
+                    parent,
+                    false
+                )
+            )
         else
-            LoaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.row_loader, parent, false))
+            LoaderViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.row_loader,
+                    parent,
+                    false
+                )
+            )
 
     }
 
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is LoaderViewHolder){
+        if (holder is LoaderViewHolder) {
             holder.bind()
-        }else if (holder is LocationsViewHolder){
+        } else if (holder is LocationsViewHolder) {
             if (items[position] != null) holder.bind(items[position]!!)
         }
     }
@@ -74,19 +87,27 @@ class LocationsAdapter(
                 tvDistance.text = "${item.distance / 1000} ${tvDistance.context.getString(R.string.km)}"
                 tvType.text = item.categoryType
                 //Note: Image are wrong some has picture but url doesn't show any picture in browser
-                imageLoader.load(ivPicture, item.picture , R.drawable.place_holder)
-                imageLoader.load(icType, item.categoryIcon , R.drawable.ic_type)
+                imageLoader.load(ivPicture, item.picture, R.drawable.place_holder)
+                imageLoader.load(icType, item.categoryIcon, R.drawable.ic_type)
+            }
+
+            itemView.setOnClickListener {
+                listener?.onItemClicked(items[adapterPosition]?.id)
             }
         }
 
     }
 
-    inner class LoaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class LoaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(){
+        fun bind() {
             itemView.apply {
 
             }
         }
+    }
+
+    interface LocationAdapterListener {
+        fun onItemClicked(id: String?)
     }
 }
