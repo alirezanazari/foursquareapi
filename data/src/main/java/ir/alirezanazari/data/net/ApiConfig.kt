@@ -19,7 +19,7 @@ class ApiConfig {
 
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                .connectTimeout(16, TimeUnit.SECONDS)
+                .connectTimeout(24, TimeUnit.SECONDS)
                 .build()
 
             return Retrofit.Builder()

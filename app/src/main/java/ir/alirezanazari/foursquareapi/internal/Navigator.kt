@@ -14,7 +14,7 @@ class Navigator {
         }
 
         fun openLocationDetailFragment(fm: FragmentManager? , id: String) {
-            NavigationUtil(fm, LocationDetailFragment.newInstance(id)).setReplace(true).load()
+            NavigationUtil(fm, LocationDetailFragment.newInstance(id)).setReplace(false).load()
         }
 
     }

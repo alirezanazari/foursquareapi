@@ -1,4 +1,4 @@
-package ir.alirezanazari.data.net.models.explore
+package ir.alirezanazari.data.net.models
 
 
 import com.google.gson.annotations.SerializedName

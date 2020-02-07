@@ -1,14 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/appPagesRootStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/appPagesRootStyle"
     tools:context=".ui.details.LocationDetailFragment">
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/lytToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="58dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintBottom_toBottomOf="@id/lytToolbar"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="@id/lytToolbar"
+        app:layout_constraintTop_toTopOf="@id/lytToolbar"
+        app:srcCompat="@drawable/ic_back" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/detail"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/toolbar_textSizes"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintEnd_toStartOf="@id/btnBack"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+    <ScrollView
+        android:id="@+id/lytContent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lytToolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/vpPictures"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="right"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/standard_textSize"
+                android:textStyle="bold"
+                tools:text="نام موقعیت" />
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/address"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/standard_textSize" />
+
+            <TextView
+                android:id="@+id/tvLikes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:text="@string/liked"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/standard_textSize" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/pbLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/lytContent"
+        app:layout_constraintEnd_toEndOf="@id/lytContent"
+        app:layout_constraintStart_toStartOf="@id/lytContent"
+        app:layout_constraintTop_toTopOf="@id/lytContent" />
+
+    <TextView
+        android:id="@+id/tvNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_place_found"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/standard_textSize"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/lytContent"
+        app:layout_constraintStart_toStartOf="@id/lytContent"
+        app:layout_constraintTop_toBottomOf="@id/btnRetry" />
+
+    <ImageView
+        android:id="@+id/btnRetry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/lytContent"
+        app:layout_constraintEnd_toEndOf="@id/lytContent"
+        app:layout_constraintStart_toStartOf="@id/lytContent"
+        app:layout_constraintTop_toTopOf="@id/lytContent"
+        app:srcCompat="@drawable/ic_retry" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

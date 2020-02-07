@@ -1,9 +1,10 @@
-package ir.alirezanazari.data.net.models.explore
+package ir.alirezanazari.data.net.models
 
 
 import com.google.gson.annotations.SerializedName
+import ir.alirezanazari.data.net.models.detail.Response
 
-data class ExploreVenuesModel(
+data class VenueDetailResponse(
     @SerializedName("meta")
     val meta: Meta,
     @SerializedName("response")

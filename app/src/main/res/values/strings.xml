@@ -6,4 +6,7 @@
     <string name="error_connection">خطایی در دریافت اطلاعات رخ داد.</string>
     <string name="no_address">موقعیت ثبت نشده</string>
     <string name="km">کیلومتر</string>
+    <string name="detail">جزئیات</string>
+    <string name="address">آدرس :</string>
+    <string name="liked">نفر این مکان را پیشنهاد میکنند.</string>
 </resources>

@@ -1,4 +1,4 @@
-package ir.alirezanazari.data.net.models.explore
+package ir.alirezanazari.data.net.models.detail
 
 
 import com.google.gson.annotations.SerializedName
@@ -13,6 +13,10 @@ data class Venue(
     val location: Location,
     @SerializedName("categories")
     val categories: List<Category>,
-    @SerializedName("photos")
-    val photos: Photos
+    @SerializedName("likes")
+    val likes: Likes,
+    @SerializedName("dislike")
+    val dislike: Boolean,
+    @SerializedName("hereNow")
+    val hereNow: HereNow
 )
