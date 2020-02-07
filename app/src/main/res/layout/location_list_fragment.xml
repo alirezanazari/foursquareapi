@@ -39,23 +39,30 @@
         app:layout_constraintEnd_toStartOf="@id/btnLogo"
         app:layout_constraintTop_toTopOf="@id/btnLogo" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvLocations"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/lytRefresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lytToolbar" />
+        app:layout_constraintTop_toBottomOf="@id/lytToolbar" >
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLocations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar
         android:id="@+id/pbLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/rvLocations"
-        app:layout_constraintEnd_toEndOf="@id/rvLocations"
-        app:layout_constraintStart_toStartOf="@id/rvLocations"
-        app:layout_constraintTop_toTopOf="@id/rvLocations" />
+        app:layout_constraintBottom_toBottomOf="@id/lytRefresh"
+        app:layout_constraintEnd_toEndOf="@id/lytRefresh"
+        app:layout_constraintStart_toStartOf="@id/lytRefresh"
+        app:layout_constraintTop_toTopOf="@id/lytRefresh" />
 
     <TextView
         android:id="@+id/tvNoData"
@@ -65,8 +72,8 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/standard_textSize"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/rvLocations"
-        app:layout_constraintStart_toStartOf="@id/rvLocations"
+        app:layout_constraintEnd_toEndOf="@id/lytRefresh"
+        app:layout_constraintStart_toStartOf="@id/lytRefresh"
         app:layout_constraintTop_toBottomOf="@id/btnRetry" />
 
     <ImageView
@@ -75,10 +82,10 @@
         android:layout_height="wrap_content"
         android:padding="6dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/rvLocations"
-        app:layout_constraintEnd_toEndOf="@id/rvLocations"
-        app:layout_constraintStart_toStartOf="@id/rvLocations"
-        app:layout_constraintTop_toTopOf="@id/rvLocations"
+        app:layout_constraintBottom_toBottomOf="@id/lytRefresh"
+        app:layout_constraintEnd_toEndOf="@id/lytRefresh"
+        app:layout_constraintStart_toStartOf="@id/lytRefresh"
+        app:layout_constraintTop_toTopOf="@id/lytRefresh"
         app:srcCompat="@drawable/ic_retry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

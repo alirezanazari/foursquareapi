@@ -56,11 +56,11 @@ class LocationListFragment : BaseFragment() {
             adapter = mAdapter
         }
 
-        mAdapter.listener = object : LocationsAdapter.LocationAdapterListener{
+        mAdapter.listener = object : LocationsAdapter.LocationAdapterListener {
             override fun onItemClicked(id: String?) {
                 id?.let {
                     if (activity == null) return@let
-                    Navigator.openLocationDetailFragment(activity?.supportFragmentManager , it)
+                    Navigator.openLocationDetailFragment(activity?.supportFragmentManager, it)
                 }
             }
         }
@@ -88,8 +88,12 @@ class LocationListFragment : BaseFragment() {
 
     private fun setupListeners() {
 
+        lytRefresh.setOnRefreshListener {
+            getCurrentLocationAndFindVenues(false)
+        }
+
         btnRetry.setOnClickListener {
-            getCurrentLocationAndFindVenues()
+            getCurrentLocationAndFindVenues(false)
         }
 
         viewModel.responseListener.observe(viewLifecycleOwner, Observer {
@@ -106,6 +110,7 @@ class LocationListFragment : BaseFragment() {
         viewModel.loaderVisibilityListener.observe(viewLifecycleOwner, Observer {
             it?.let { state ->
                 pbLoading.visibility = if (state) View.VISIBLE else View.GONE
+                if (!state) lytRefresh.isRefreshing = false
             }
         })
 
@@ -140,7 +145,7 @@ class LocationListFragment : BaseFragment() {
 
     }
 
-    private fun getCurrentLocationAndFindVenues(isFromBroadcast: Boolean = false) {
+    private fun getCurrentLocationAndFindVenues(isCheckDb: Boolean = true) {
         GlobalScope.launch(Dispatchers.Main) {
             mAdapter.clearItems()
 
@@ -150,8 +155,11 @@ class LocationListFragment : BaseFragment() {
             mCurrentLatlng = viewModel.getCurrentLocationLatlng()
             Logger.showLog(mCurrentLatlng)
 
-            if (!isFromBroadcast) {
-                viewModel.getLastLocationFromDb { getFindVenues(it) }
+            if (isCheckDb) {
+                viewModel.getLastLocationFromDb(
+                    { getFindVenues(it) },
+                    { viewModel.getNearLocations(mCurrentLatlng, mOffset) }
+                )
             } else {
                 viewModel.getNearLocations(mCurrentLatlng, mOffset)
             }
@@ -194,7 +202,7 @@ class LocationListFragment : BaseFragment() {
             val latlng = getConvertLocation(mCurrentLatlng) ?: return@launch
             val isChanged = viewModel.isLocationChanged(latlng.first, latlng.second)
             Logger.showLog("Location changed: $isChanged")
-            if (isChanged) getCurrentLocationAndFindVenues(true)
+            if (isChanged) getCurrentLocationAndFindVenues(false)
         }
     }
 

@@ -101,11 +101,11 @@ class LocationListViewModel(
     }
 
     @SuppressLint("CheckResult")
-    fun getLastLocationFromDb(onSuccess: (t: List<String>) -> Unit) {
+    fun getLastLocationFromDb(onSuccess: (t: List<String>) -> Unit , onFail: (t: Throwable) -> Unit) {
         db.getLastLocation()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(onSuccess, { Logger.showLog(it.message) })
+            .subscribe(onSuccess, onFail)
     }
 
     @SuppressLint("CheckResult")
