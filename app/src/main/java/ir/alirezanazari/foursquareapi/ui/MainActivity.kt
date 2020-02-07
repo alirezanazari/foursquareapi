@@ -1,10 +1,15 @@
 package ir.alirezanazari.foursquareapi.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.provider.Settings
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -38,14 +43,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (hasLocationPermission()) {
-            bindLocationManager()
-            setupFragments()
-            setupLocationChecker()
+        if (isLocationEnable()) {
+            if (hasLocationPermission()) {
+                showFragmentsAndEnableLocation()
+            }else{
+                requestLocationPermission()
+            }
         }else{
-            requestLocationPermission()
+            showLocationEnableRequest()
         }
 
+    }
+
+    private fun showFragmentsAndEnableLocation() {
+        bindLocationManager()
+        setupLocationChecker()
+        setupFragments()
     }
 
     private fun setupFragments() {
@@ -71,9 +84,7 @@ class MainActivity : AppCompatActivity() {
         when(requestCode){
             PERMISSION_ACCESS_COARSE_LOCATION_ID ->{
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    bindLocationManager()
-                    setupFragments()
-                    setupLocationChecker()
+                    showFragmentsAndEnableLocation()
                 }else {
                     Logger.showToast(this, R.string.location_permission_hint)
                     requestLocationPermission()
@@ -111,6 +122,43 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
+    private fun showLocationEnableRequest(){
+        val dialog = AlertDialog.Builder(this)
+
+        dialog
+            .setCancelable(false)
+            .setMessage(R.string.enable_location)
+            .setPositiveButton(R.string.ok) { d, _ ->
+                if (isLocationEnable()){
+                    d.dismiss()
+                    if (hasLocationPermission()){
+                        showFragmentsAndEnableLocation()
+                    }else{
+                        requestLocationPermission()
+                    }
+                }else{
+                    Logger.showToast(this , R.string.no_location)
+                    dialog.show()
+                }
+            }
+
+        dialog.show()
+
+        Handler().postDelayed( {
+            openSettingPage()
+        }, 1200)
+
+    }
+
+    private fun openSettingPage() {
+        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+    }
+
+    private fun isLocationEnable():Boolean{
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount == 1) {
             val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
@@ -129,4 +177,5 @@ class MainActivity : AppCompatActivity() {
         mTimerLocation?.cancel()
         super.onDestroy()
     }
+
 }

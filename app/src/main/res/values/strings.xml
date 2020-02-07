@@ -9,4 +9,7 @@
     <string name="detail">جزئیات</string>
     <string name="address">آدرس :</string>
     <string name="liked">نفر این مکان را پیشنهاد میکنند.</string>
+    <string name="no_location">موقعیت مکانی شما یافت نشد. لطفا آن را فعال و مجدد تلاش کنید.</string>
+    <string name="enable_location">لطفا موقعیت مکانی خود را فعال کنید.</string>
+    <string name="ok">باشه</string>
 </resources>

@@ -153,7 +153,7 @@ class LocationListFragment : BaseFragment() {
             isEndOfList = false
             viewModel.isLoadingData = false
             mCurrentLatlng = viewModel.getCurrentLocationLatlng()
-            Logger.showLog(mCurrentLatlng)
+            Logger.showLog("Latlng : $mCurrentLatlng")
 
             if (isCheckDb) {
                 viewModel.getLastLocationFromDb(

@@ -22,11 +22,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="12dp"
+        android:src="@drawable/app_icon"
         app:layout_constraintBottom_toBottomOf="@id/lytToolbar"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@id/lytToolbar"
-        app:layout_constraintTop_toTopOf="@id/lytToolbar"
-        android:src="@drawable/app_icon" />
+        app:layout_constraintTop_toTopOf="@id/lytToolbar" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -46,12 +46,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lytToolbar" >
+        app:layout_constraintTop_toBottomOf="@id/lytToolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvLocations"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -68,6 +68,7 @@
         android:id="@+id/tvNoData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="@string/no_place_found"
         android:textColor="@android:color/black"
         android:textSize="@dimen/standard_textSize"

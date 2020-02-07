@@ -47,8 +47,13 @@ class LocationListViewModel(
     fun getNearLocations(latLng: String, offset: Int) {
         isLoadingData = true
         if (offset == 0) {
-            setLoaderState(true)
             clearDatabase()
+            if (latLng.isEmpty()){
+                setLoaderState(false , isEffectRetry = true)
+                errorListener.postValue(R.string.no_location)
+                return
+            }
+            setLoaderState(true)
         }
         useCase.execute(object : DisposableSingleObserver<List<VenueEntity>>() {
             override fun onSuccess(response: List<VenueEntity>) {
@@ -58,6 +63,7 @@ class LocationListViewModel(
 
             override fun onError(e: Throwable) {
                 isLoadingData = false
+                e.printStackTrace()
                 Logger.showLog(e.message)
                 if (offset == 0) setLoaderState(false, isEffectRetry = true)
                 errorListener.postValue(R.string.error_connection)
