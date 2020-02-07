@@ -57,7 +57,7 @@ class NetworkDataManagerImpl(
     private fun getCompleteAddress(address: List<String>): String? {
         var result = ""
         address.forEach {
-            result += "$it , "
+            result += "$it "
         }
         return result
     }

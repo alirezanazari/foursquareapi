@@ -17,6 +17,7 @@ import ir.alirezanazari.domain.intractor.GetNearVenueUseCase
 import ir.alirezanazari.domain.intractor.GetVenueUseCase
 import ir.alirezanazari.domain.repository.VenueRepository
 import ir.alirezanazari.foursquareapi.ui.details.LocationDetailViewModel
+import ir.alirezanazari.foursquareapi.ui.details.LocationPictureAdapter
 import ir.alirezanazari.foursquareapi.ui.locations.LocationListViewModel
 import ir.alirezanazari.foursquareapi.ui.locations.LocationsAdapter
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -40,4 +41,5 @@ val moduleDI = module {
     viewModel { LocationDetailViewModel(get()) }
 
     factory { LocationsAdapter(get()) }
+    factory { LocationPictureAdapter(get()) }
 }

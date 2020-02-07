@@ -19,9 +19,13 @@ class LocationDetailFragment : BaseFragment() {
 
     companion object {
 
-        fun newInstance(id: String) : LocationDetailFragment{
+        private const val FRAGMENT_VENUE_ID = "venueId"
+
+        fun newInstance(id: String): LocationDetailFragment {
             val fragment = LocationDetailFragment()
-            fragment.mVenueId = id
+            val bundle = Bundle()
+            bundle.putString(FRAGMENT_VENUE_ID , id)
+            fragment.arguments = bundle
             return fragment
         }
 
@@ -29,6 +33,7 @@ class LocationDetailFragment : BaseFragment() {
 
     private lateinit var mVenueId: String
     private val viewModel: LocationDetailViewModel by inject()
+    private val mPictureAdapter: LocationPictureAdapter by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,6 +45,7 @@ class LocationDetailFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupListeners()
+        mVenueId = arguments?.getString(FRAGMENT_VENUE_ID) ?: return
         viewModel.getVenueById(mVenueId)
     }
 
@@ -95,7 +101,8 @@ class LocationDetailFragment : BaseFragment() {
     }
 
     private fun setupImageSlier(picture: String) {
-
+        vpPictures.adapter = mPictureAdapter
+        mPictureAdapter.setItems(listOf(picture , "")) //add empty for ui . server doesn't response any picture
     }
 
     override fun onBackPressed(): Boolean {
