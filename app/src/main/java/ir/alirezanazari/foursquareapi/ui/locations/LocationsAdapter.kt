@@ -84,7 +84,7 @@ class LocationsAdapter(
             itemView.apply {
                 tvName.text = item.name
                 tvAddress.text = if (item.address.isNullOrEmpty()) tvAddress.context.getString(R.string.no_address) else item.address
-                tvDistance.text = "${item.distance / 1000} ${tvDistance.context.getString(R.string.km)}"
+                tvDistance.text = "${getComputeLocationDistance(item.distance)} ${tvDistance.context.getString(R.string.km)}"
                 tvType.text = item.categoryType
                 //Note: Image are wrong some has picture but url doesn't show any picture in browser
                 imageLoader.load(ivPicture, item.picture, R.drawable.place_holder)
@@ -94,6 +94,15 @@ class LocationsAdapter(
             itemView.setOnClickListener {
                 listener?.onItemClicked(items[adapterPosition]?.id)
             }
+
+        }
+
+        private fun getComputeLocationDistance(distance: Int): String{
+            var result = (distance / 1000).toString()
+            if (result == "0"){
+                result = itemView.context.getString(R.string.fewer) + "  1  "
+            }
+            return result
         }
 
     }

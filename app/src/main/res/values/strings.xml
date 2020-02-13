@@ -12,4 +12,5 @@
     <string name="no_location">موقعیت مکانی شما یافت نشد. لطفا آن را فعال و مجدد تلاش کنید.</string>
     <string name="enable_location">لطفا موقعیت مکانی خود را فعال کنید.</string>
     <string name="ok">باشه</string>
+    <string name="fewer">کمتر از</string>
 </resources>
