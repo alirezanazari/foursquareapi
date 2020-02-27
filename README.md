@@ -9,6 +9,6 @@ for multi threading process.
 Used Archtectural component such Live Data , View Model and Room 
 for presist and cache data .
 
-use Google Location service for fetch venues(locations) based on 
+Use Google Location service for fetch venues(locations) based on 
 user current location and update list for every 100 meter walking.
 
